@@ -12,3 +12,4 @@ from tkinter.filedialog import askopenfilenames
 
 def ask_for_files():
     return [os.path.normpath(x) for x in askopenfilenames()]
+
