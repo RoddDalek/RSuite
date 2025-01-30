@@ -20,15 +20,31 @@ def ask_for_files():
 
 def import_data(filepath, separator='\t'):
     """
-    In principle, it opens a .txt file and extracts the data.
+    It opens a .txt file and extracts the data.
     :param filepath:
     :param separator: Used separator in the file.
     :return: A list with all data tuples extracted on the file.
     """
     aux = []
-    with open(filepath, 'r') as f:
-        data = f.readlines()
-    for item in data:
-        aux.append(item.split(separator))
+    try:
+        with open(filepath, 'r') as f:
+            data = f.read()
+        data = data.split('\n')
+        for item in data:
+            aux.append(item.split(separator))
+    except FileNotFoundError:
+        print('The selected file was not found.')
     return aux
 
+
+def export_data(filepath, data, separator='\t'):
+    """
+    It creates a new .txt file with the exported data from the RSuite.
+    :param filepath:
+    :param data:
+    :param separator:
+    """
+    aux = []
+    with open(filepath, 'w') as f:
+        for item in data:
+            f.write(item[0] + separator + item[1] + '\n')
