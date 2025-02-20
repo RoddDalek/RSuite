@@ -1,10 +1,9 @@
 """
     files_util.py
     Author: Rodolfo Canet
-    Purpose: To hold the relevant scripts to import files easier.
+    Purpose: To hold the relevant scripts to import and export files easier.
 """
 
-import tkinter as tk
 import os
 
 from tkinter.filedialog import askopenfilenames
@@ -44,7 +43,6 @@ def export_data(filepath, data, separator='\t'):
     :param data:
     :param separator:
     """
-    aux = []
     with open(filepath, 'w') as f:
         for item in data:
             f.write(item[0] + separator + item[1] + '\n')
