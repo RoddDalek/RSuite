@@ -6,14 +6,16 @@
 """
 
 from scripts.files_util import ask_for_files, import_data, export_data
+from scripts.obsidian import Vault
+
+from scripts.gdstk_library import gdstk_library
 
 
 def test():
-    aux = ask_for_files()
-    aux = import_data(aux[0])
-    print(aux)
-    export_data('Debugged.txt', aux)
+    gdstk_library()
 
 
 if __name__ == '__main__':
+    print('Starting debug.')
     test()
+    print('Ending debug.')

@@ -6,7 +6,7 @@
 
 import os
 
-from tkinter.filedialog import askopenfilenames
+from tkinter.filedialog import askopenfilenames, askdirectory
 
 
 def ask_for_files():
@@ -15,6 +15,14 @@ def ask_for_files():
     :return: List with all the paths already normalized for all selected files.
     """
     return [os.path.normpath(x) for x in askopenfilenames()]
+
+
+def ask_for_directory():
+    """
+        Opens a tkinter Dialog to select a folder.
+        :return: List with all the paths already normalized for all selected files.
+    """
+    return os.path.normpath(askdirectory())
 
 
 def import_data(filepath, separator='\t'):
