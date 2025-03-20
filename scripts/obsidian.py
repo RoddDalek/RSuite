@@ -6,7 +6,7 @@
 
 import os
 
-from scripts.files_util import ask_for_directory
+from scripts.utils.files_util import ask_for_directory
 
 
 class Vault:

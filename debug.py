@@ -5,9 +5,6 @@
     altering main.py.
 """
 
-from scripts.files_util import ask_for_files, import_data, export_data
-from scripts.obsidian import Vault
-
 from scripts.gdstk_library import gdstk_library
 
 
