@@ -21,6 +21,21 @@ def calc_rect_polygon(center, w, h):
     return [x1, y1], [x2, y2], [x3, y3], [x4, y4]
 
 
+def calc_hex_polygon(center, w, h):
+
+    x, y = center[0], center[1]
+    x1, y1 = x + w / 6, y + h / 2
+    x2, y2 = x + w / 2, y + h / 6
+    x3, y3 = x + w / 2, y - h / 6
+    x4, y4 = x + w / 6, y - h / 2
+    x5, y5 = x - w / 6, y - h / 2
+    x6, y6 = x - w / 2, y - h / 6
+    x7, y7 = x - w / 2, y + h / 6
+    x8, y8 = x - w / 6, y + h / 2
+
+    return [x1, y1], [x2, y2], [x3, y3], [x4, y4], [x5, y5], [x6, y6], [x7, y7], [x8, y8]
+
+
 def render_text(text, size=None, position=(0, 0), font_prop=None, tolerance=0.1):
 
     precision = 0.1 * tolerance

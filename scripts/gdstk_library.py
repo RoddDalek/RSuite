@@ -6,7 +6,7 @@
 
 from scripts.gds_cells.C000_markers_5mm import Markers5mm
 from scripts.gds_cells.C001_basic1 import Basic1
-
+from scripts.gds_cells.C002_Snowflake_II import SnowflakeII
 
 import gdstk
 
@@ -19,14 +19,20 @@ def gdstk_library():
         Definition of the cell, which corresponds to the final "item" that will be created
         into the library.
     """
-    basic_markers = Markers5mm()
-    basic = Basic1()
+    # basic_markers = Markers5mm()
+    # basic = Basic1()
+    snowflake_2 = SnowflakeII()
 
     # Add each cell from one library into the final one.
+    """    
     for cell in basic_markers.lib.cells:
         lib.add(cell)
     lib.add(basic.cell_base)
     lib.add(basic.cell)
+    """
+    for item in snowflake_2.base_pillars:
+        lib.add(item)
+    lib.add(snowflake_2.cell)
 
     # Saving the library in a GDSII file.
     lib.write_gds(r"C:\Users\canetr1\OneDrive - Aalto University\GDS Files\test.gds")

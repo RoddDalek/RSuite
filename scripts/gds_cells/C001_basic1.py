@@ -33,19 +33,19 @@ class Basic1:
         # Calculate centers
         c1, c2, c3 = generate_centers(self.center, self.channel_w, self.s1, self.s2, self.s3)
 
-        # Calculate corners for the different rectangles.
+        # Calculate corner points for the different rectangles.
         c_s1 = calc_rect_polygon(c1, self.s1[0], self.s1[1])
         c_s2 = calc_rect_polygon(c2, self.s2[0], self.s2[1])
         c_s3 = calc_rect_polygon(c3, self.s3[0], self.s3[1])
 
         # Build up the shapes
-        shape1 = gdstk.Polygon(c_s1)
-        shape2 = gdstk.Polygon(c_s2)
-        shape3 = gdstk.Polygon(c_s3)
+        c_s1 = gdstk.Polygon(c_s1)
+        c_s2 = gdstk.Polygon(c_s2)
+        c_s3 = gdstk.Polygon(c_s3)
 
         # Build up the basic contact
         self.cell_base = gdstk.Cell("Contact")
-        self.cell_base.add(shape1, shape2, shape3)
+        self.cell_base.add(c_s1, c_s2, c_s3)
 
         # Build the contact and its mirror
         right_contact = gdstk.Reference(self.cell_base, origin=(0, 0))
