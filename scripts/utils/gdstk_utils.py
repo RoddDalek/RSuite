@@ -10,7 +10,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.textpath import TextPath
 
 
-def calc_rect_polygon(center, w, h):
+def calc_rect_polygon(center: tuple = (0, 0), w: float = 500, h: float = 500):
 
     x, y = center[0], center[1]
     x1, y1 = x - w / 2, y + h / 2
@@ -21,7 +21,7 @@ def calc_rect_polygon(center, w, h):
     return [x1, y1], [x2, y2], [x3, y3], [x4, y4]
 
 
-def calc_hex_polygon(center, w, h):
+def calc_octo_polygon(center, w, h):
 
     x, y = center[0], center[1]
     x1, y1 = x + w / 6, y + h / 2
@@ -72,6 +72,11 @@ def render_text(text, size=None, position=(0, 0), font_prop=None, tolerance=0.1)
                 polys.append(poly)
 
     return polys
+
+
+def create_pad(pad_size: float):
+    aux_pad = gdstk.Polygon(calc_rect_polygon((0, 0), pad_size, pad_size))
+    return aux_pad
 
 
 """

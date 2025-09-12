@@ -4,21 +4,22 @@
     Purpose: Cell representation of the contact pattern C002_SnowflakeII.
 """
 
-from scripts.utils.gdstk_utils import calc_rect_polygon, calc_hex_polygon
+from scripts.utils.gdstk_utils import calc_rect_polygon, calc_octo_polygon
 
 import numpy as np
 import gdstk
+import math
 
 
 # noinspection PyTypeChecker
 class SnowflakeII:
 
-    def __init__(self, c_w=10, limit_x=1750):
+    def __init__(self, c_w=10, limit_x=1000):
 
         # Designate basic properties
         self.center = (0, 0)
-        self.base_radius = 0.15
-        self.radius_limit = 0.5
+        self.base_radius = 0.5
+        self.radius_limit = 1.0
         self.cell = gdstk.Cell("Snowflake II")
         self.base_pillars = []
 
@@ -36,11 +37,6 @@ class SnowflakeII:
         # Generate and add to the cell the center text of the chip
         for item in self.generate_center_text(f"Snowflake II", 30):
             self.cell.add(item)
-
-    def reorder_areas(self):
-        areas = [self.areas[3], self.areas[0], self.areas[1], self.areas[2], self.areas[4], self.areas[6],
-                 self.areas[7], self.areas[5]]
-        return areas
 
     def generate_center_text(self, text, text_size):
 
@@ -62,11 +58,11 @@ class SnowflakeII:
             full_barrier.append(gdstk.Reference(barrier_cell, rotation=i * (np.pi / 4)))
 
         # Creating now auxiliary polygons for area and array creation
-        int_hexagon = gdstk.Polygon(calc_hex_polygon(self.center, 0.4 * limit_x, 0.4 * limit_x))
-        ext_hexagon = gdstk.Polygon(calc_hex_polygon(self.center, 0.975 * 2 * limit_x, 0.975 * 2 * limit_x))
+        int_octagon = gdstk.Polygon(calc_octo_polygon(self.center, 0.4 * limit_x, 0.4 * limit_x))
+        ext_octagon = gdstk.Polygon(calc_octo_polygon(self.center, 0.975 * 2 * limit_x, 0.975 * 2 * limit_x))
 
         # Creation of the polygons for each area
-        center_area = gdstk.boolean(ext_hexagon, int_hexagon, "not")
+        center_area = gdstk.boolean(ext_octagon, int_octagon, "not")
         areas = gdstk.boolean(center_area, full_barrier, "not", layer=2, datatype=2)
 
         return areas
@@ -86,7 +82,6 @@ class SnowflakeII:
 
             self.base_pillars.append(gdstk.Cell("Pillar_" + str(m)).add(gdstk.ellipse(self.center, radius=aux_r
                                                                                       , tolerance=0.005)))
-
             n_x, n_y = int(bbox_dx / aux_d - 2 * aux_r), int(bbox_dy / aux_d - 2 * aux_r)
 
             array = []
@@ -121,19 +116,24 @@ class SnowflakeII:
             aux_r = self.base_radius + m * (self.radius_limit - self.base_radius) / 3
             aux_d = 3 * aux_r
 
-            n_x, n_y = int(bbox_dx / aux_d - 2 * aux_r), int(bbox_dy / aux_d - 2 * aux_r)
+            n_x = int(bbox_dx / (aux_d * math.sqrt(3)/2) - 2 * aux_r)
+
+            n1_y = 2 * int(bbox_dx / aux_d - 2 * aux_r)
+            n2_y = 2 * int(bbox_dx / (aux_d / 2) - 2 * aux_r)
 
             array = []
             for i in range(0, n_x, 2):
-                aux_x = bbox[0][0] + aux_r + i * aux_d
-                for j in range(0, n_y, 1):
+
+                aux_x = bbox[0][0] + aux_r + i * (aux_d * math.sqrt(3)/2)
+                for j in range(0, n1_y, 1):
                     aux_y = bbox[0][1] + aux_r + j * aux_d
                     aux_element = gdstk.Reference(self.base_pillars[m], (aux_x, aux_y))
                     if area.contain_all(aux_element.get_polygons()[0].points[0]):
                         array.append(aux_element)
-                aux_x = bbox[0][0] + aux_r + (i + 1) * aux_d
-                for j in range(0, n_y, 1):
-                    aux_y = bbox[0][1] + aux_r + (j + 1/3) * aux_d
+
+                aux_x = bbox[0][0] + aux_r + (i + 1) * math.sqrt(3)/2 * aux_d
+                for j in range(0, n2_y, 2):
+                    aux_y = bbox[0][1] + aux_r + (j + 1) * aux_d / 2
                     aux_element = gdstk.Reference(self.base_pillars[m], (aux_x, aux_y))
                     if area.contain_all(aux_element.get_polygons()[0].points[0]):
                         array.append(aux_element)
@@ -147,3 +147,8 @@ class SnowflakeII:
         for array in array_list:
             for element in array:
                 self.cell.add(element)
+
+    def reorder_areas(self):
+        areas = [self.areas[3], self.areas[0], self.areas[1], self.areas[2], self.areas[4], self.areas[6],
+                 self.areas[7], self.areas[5]]
+        return areas
