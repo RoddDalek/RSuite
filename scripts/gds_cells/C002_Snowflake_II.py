@@ -4,7 +4,7 @@
     Purpose: Cell representation of the contact pattern C002_SnowflakeII.
 """
 
-from scripts.utils.gdstk_utils import calc_rect_polygon, calc_octo_polygon
+from scripts.utils.gdstk_utils import calc_rect_polygon, calc_octa_polygon
 
 import numpy as np
 import gdstk
@@ -58,8 +58,8 @@ class SnowflakeII:
             full_barrier.append(gdstk.Reference(barrier_cell, rotation=i * (np.pi / 4)))
 
         # Creating now auxiliary polygons for area and array creation
-        int_octagon = gdstk.Polygon(calc_octo_polygon(self.center, 0.4 * limit_x, 0.4 * limit_x))
-        ext_octagon = gdstk.Polygon(calc_octo_polygon(self.center, 0.975 * 2 * limit_x, 0.975 * 2 * limit_x))
+        int_octagon = gdstk.Polygon(calc_octa_polygon(self.center, 0.4 * limit_x, 0.4 * limit_x))
+        ext_octagon = gdstk.Polygon(calc_octa_polygon(self.center, 0.975 * 2 * limit_x, 0.975 * 2 * limit_x))
 
         # Creation of the polygons for each area
         center_area = gdstk.boolean(ext_octagon, int_octagon, "not")

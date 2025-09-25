@@ -1,7 +1,7 @@
 """
-    C004_Snowflake_III.py
+    C005_RoundCoupler.py
     Author: Rodolfo Canet
-    Purpose: Cell representation of the contact pattern C004_Snowflake_III.
+    Purpose: Cell representation of RoundCoupler.
 """
 
 from scripts.utils.gdstk_utils import calc_rect_polygon, calc_octa_polygon, calc_arrow_polygon
@@ -11,7 +11,7 @@ import gdstk
 import math
 
 
-class SnowflakeIII:
+class RoundCoupler:
 
     def __init__(self):
 
@@ -19,7 +19,7 @@ class SnowflakeIII:
 
             text_cell = gdstk.Cell("Chip name")
             position = (center[0] - len(text) * text_size / 3.6, center[1] - text_size / 2)
-            text = gdstk.text(text, text_size, position)
+            text = gdstk.text(text, text_size, position, layer=3)
             for item in text:
                 text_cell.add(item)
             bbox = text_cell.bounding_box()
@@ -43,11 +43,11 @@ class SnowflakeIII:
                 full_buffer.append(gdstk.Reference(buffer_cell, rotation=i * (np.pi / 4)))
 
             # Creating auxiliary polygons for area and array creation
-            ext_octagon = gdstk.Polygon(calc_octa_polygon(center, 0.975 * size, 0.975 * size))
-            int_octagon = gdstk.Polygon(calc_octa_polygon(center, 0.400 * size, 0.400 * size))
+            ext_circle = gdstk.ellipse(center, 0.475 * size, tolerance=0.005)
+            int_circle = gdstk.ellipse(center, 0.175 * size, tolerance=0.005)
 
             # Creation of the final polygonal areas
-            center_area = gdstk.boolean(ext_octagon, int_octagon, "not")
+            center_area = gdstk.boolean(ext_circle, int_circle, "not")
             areas = gdstk.boolean(center_area, full_buffer, "not", layer=2, datatype=0)
 
             return reorder_areas(areas)
@@ -142,15 +142,15 @@ class SnowflakeIII:
 
         # Designate basic properties
         self.center = (0, 0)
-        self.size = 2000
-        self.buffer_size = 10
+        self.size = 200
+        self.buffer_size = 1
         self.base_radius = 0.5
         self.radius_limit = 1.0
-        self.cell = gdstk.Cell("Snowflake III")
+        self.cell = gdstk.Cell("RoundCoupler")
         self.base_elements = []
 
         # Generates and adds the center text
-        text_cell, aux_bbox = generate_center_text(self.center, f"Snowflake III", 50)
+        text_cell, aux_bbox = generate_center_text(self.center, f"RoundCoupler v1", 5)
         text_position = (self.center[0] - (aux_bbox[0][0] + aux_bbox[1][0])/2,
                          self.center[1] - (aux_bbox[0][1] + aux_bbox[1][1])/2)
         self.cell.add(gdstk.Reference(text_cell, text_position))
@@ -159,9 +159,14 @@ class SnowflakeIII:
         for area in areas:
             self.cell.add(area)
 
-        areas = [construct_area(areas[0], "hexagonal", 5, 1, 0, "pillar", 0.250, inverse=True),
-                 construct_area(areas[1], "hexagonal", 5, 1, 0, "pillar", 0.250),
-                 construct_area(areas[2], "hexagonal", 2, 1, 0, "pillar", 0.750)]
+        areas = [construct_area(areas[0], "square", 2, 1, 0, "pillar", 0.250),
+                 construct_area(areas[1], "hexagonal", 2, 1, 0, "pillar", 0.250),
+                 construct_area(areas[2], "square", 1, 1, 0, "pillar", 0.250),
+                 construct_area(areas[3], "hexagonal", 1, 1, 0, "pillar", 0.250),
+                 construct_area(areas[4], "square", 0.75, 1, 0, "pillar", 0.250),
+                 construct_area(areas[5], "hexagonal", 0.75, 1, 0, "pillar", 0.250),
+                 construct_area(areas[6], "square", 0.5, 1, 0, "pillar", 0.250),
+                 construct_area(areas[7], "hexagonal", 0.5, 1, 0, "pillar", 0.250)]
 
         for area in areas:
             for element in area:

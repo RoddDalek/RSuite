@@ -5,13 +5,13 @@
 """
 
 import gdstk
+import math
 
 from matplotlib.font_manager import FontProperties
 from matplotlib.textpath import TextPath
 
 
 def calc_rect_polygon(center: tuple = (0, 0), w: float = 500, h: float = 500):
-
     x, y = center[0], center[1]
     x1, y1 = x - w / 2, y + h / 2
     x2, y2 = x - w / 2, y - h / 2
@@ -21,8 +21,7 @@ def calc_rect_polygon(center: tuple = (0, 0), w: float = 500, h: float = 500):
     return [x1, y1], [x2, y2], [x3, y3], [x4, y4]
 
 
-def calc_octo_polygon(center, w, h):
-
+def calc_octa_polygon(center, w, h):
     x, y = center[0], center[1]
     x1, y1 = x + w / 6, y + h / 2
     x2, y2 = x + w / 2, y + h / 6
@@ -36,8 +35,18 @@ def calc_octo_polygon(center, w, h):
     return [x1, y1], [x2, y2], [x3, y3], [x4, y4], [x5, y5], [x6, y6], [x7, y7], [x8, y8]
 
 
-def render_text(text, size=None, position=(0, 0), font_prop=None, tolerance=0.1):
+def calc_arrow_polygon(center, radius, height):
 
+    x0, y0 = center[0], center[1]
+    x1, y1 = x0, y0
+    x2, y2 = x0 + radius * 1/math.sqrt(2), y0 + radius * 1/math.sqrt(2)
+    x3, y3 = x0, y0 + height
+    x4, y4 = x0 - radius * 1/math.sqrt(2), y0 + radius * 1/math.sqrt(2)
+
+    return [x1, y1], [x2, y2], [x3, y3], [x4, y4]
+
+
+def render_text(text, size=None, position=(0, 0), font_prop=None, tolerance=0.1):
     precision = 0.1 * tolerance
     path = TextPath(position, text, size=size, prop=font_prop)
     polys = []
