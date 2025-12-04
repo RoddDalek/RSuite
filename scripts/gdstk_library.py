@@ -12,6 +12,7 @@ from scripts.gds_cells.C003_Scorpio import Scorpio
 from scripts.gds_cells.C004_Snowflake_III import SnowflakeIII
 from scripts.gds_cells.C005_RoundCoupler import RoundCoupler
 from scripts.gds_cells.C006_4inch_wafer import FourInchWafer
+from scripts.gds_cells.C008_SnowflakeArray import SnowflakeArray
 
 import gdstk
 
@@ -31,6 +32,7 @@ def gdstk_library():
     # snowflake_3 = SnowflakeIII()
     # roundcoupler = RoundCoupler()
     # fourinch = FourInchWafer()
+    snowflake_array = SnowflakeArray()
 
     # Add each cell from one library into the final one.
     """    
@@ -63,6 +65,11 @@ def gdstk_library():
     for item in fourinch.markers.cells:
         lib.add(item)
     lib.add(fourinch.cell)"""
+
+    for snowflake in snowflake_array.snowflake_list:
+        for base_element in snowflake.base_elements:
+            lib.add(base_element)
+        lib.add(snowflake.cell)
 
     # Saving the library in a GDSII file.
     lib.write_gds(r"C:\Users\canetr1\OneDrive - Aalto University\GDS Files\test.gds")

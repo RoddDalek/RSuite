@@ -4,7 +4,7 @@
     Purpose: To serve as the main script from where to run testing of the gdstk library.
 """
 
-from gds_cells.C001_basic1 import Basic1
+from scripts.gds_cells.C001_basic1 import Basic1
 
 import gdstk
 
