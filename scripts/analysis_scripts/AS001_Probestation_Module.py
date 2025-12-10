@@ -46,8 +46,7 @@ def setup(fpath):
 
     def build_filter():
 
-        filter = {}
-        aux_filter = {}
+        filter, aux_filter = {}, {}
         with open(r"aux_files/extractor_as001.txt", "r") as f:
             lines = f.readlines()
         for line in lines:
@@ -64,6 +63,7 @@ def setup(fpath):
                         filter[aux_line[0]][aux_line[1]] = aux_line[2].removesuffix("\n")
                     else:
                         filter[aux_line[0]] = {}
+                        filter[aux_line[0]][aux_line[1]] = aux_line[2].removesuffix("\n")
                 else:
                     filter[aux_line[0]] = aux_line[1].removesuffix("\n")
         return filter
@@ -79,6 +79,8 @@ def setup(fpath):
             if aux_line[0] in filter.keys() and not aux_line[0] == "SetupTitle":
                 if aux_line[1] in filter[aux_line[0]].keys():
                     aux_lines.append(line)
+            elif aux_line[0] == "SetupTitle":
+                aux_lines.append(line)
             elif aux_line[0] == "DataName" or aux_line[0] == "DataValue":
                 aux_lines.append(line)
             if aux_line[0] == "SetupTitle":
@@ -93,10 +95,10 @@ def setup(fpath):
             for line in aux_lines:
                 f.write(line)
 
+    filter = build_filter()
     if check_if_setup_run(fpath):
         print("Raw and pruned data located. Skipping setup.")
     else:
-        filter = build_filter()
         os.mkdir(os.path.join(fpath, "raw"))
         os.mkdir(os.path.join(fpath, "pruned"))
         move_files(fpath)
@@ -104,16 +106,23 @@ def setup(fpath):
             if os.path.isfile(os.path.join(os.path.join(fpath, "raw"), item)):
                 prune_file(fpath, os.path.join(os.path.join(fpath, "raw"), item), filter)
 
-        return filter
+    return filter
 
 
 def extractor(fpath, filter):
-    pass
+
+    for item in os.listdir(os.path.join(fpath, "pruned")):
+        with open(os.path.join(fpath, "pruned", item), "r") as f:
+            lines = f.readlines()
+        for line in lines:
+            pass
+            # aux_line = line.split(r", ")
 
 
 if __name__ == "__main__":
 
     if check_if_sys():
-        fpath = r"C:\Users\canetr1\OneDrive - Aalto University\Research Projects\008 - Spectro-DoS\251117 - SDoS - v2\v2 without wirebond\test"
+        fpath = (r"C:\Users\canetr1\OneDrive - Aalto University\Research Projects\008 - Spectro-DoS\251117 - SDoS - "
+                 r"v2\v2 without wirebond\test")
         filter = setup(fpath)
         extractor(fpath, filter)
