@@ -1,0 +1,20 @@
+SetupTitle, Title
+TestParameter, Channel.Mode, Mode
+TestParameter, Channel.Func, Func
+TestParameter, Measurement.Primary.Locus, Locus
+TestParameter, Measurement.Primary.Scale, Scale
+TestParameter, Measurement.Primary.Start, V_start
+TestParameter, Measurement.Primary.Stop, V_stop
+TestParameter, Measurement.Primary.Step, Step
+TestParameter, Measurement.Primary.Compliance, Compliance
+TestParameter, Measurement.Bias.Source, Bias_source
+TestParameter, Measurement.Bias.Compliance, Bias_compliance
+TestParameter, Measurement.Monitor.Unit, SMUs
+TestParameter, Measurement.Monitor.Adc, ADCs
+TestParameter, Measurement.Timing.Hold, t_hold
+TestParameter, Measurement.Timing.Delay, t_delay
+MetaData, TestRecord.RecordTime, Date and Hour
+MetaData, TestRecord.TestTarget, Device Name
+MetaData, TestRecord.IterationIndex, n
+MetaData, TestRecord.Flag, Flag
+MetaData, TestRecord.Remarks, Remarks
