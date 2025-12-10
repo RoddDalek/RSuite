@@ -76,7 +76,6 @@ def setup(fpath):
             lines = f.readlines()
         for line in lines[1:]:
             aux_line = line.split(r", ")
-            print(aux_line)
             if aux_line[0] in filter.keys() and not aux_line[0] == "SetupTitle":
                 if aux_line[1] in filter[aux_line[0]].keys():
                     aux_lines.append(line)
