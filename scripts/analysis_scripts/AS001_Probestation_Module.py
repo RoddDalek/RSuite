@@ -86,7 +86,10 @@ def setup(fpath):
             if aux_line[0] == "SetupTitle":
                 aux_test = aux_line[1].replace("Canet_", "").removesuffix("\n")
             if aux_line[1] == "TestRecord.TestTarget":
-                aux_device = aux_line[2].removesuffix("\n")
+                if len(aux_line[2:]) > 1:
+                    aux_device = aux_line[2] + "," + aux_line[3].removesuffix("\n")
+                else:
+                    aux_device = aux_line[2].removesuffix("\n")
             if aux_line[1] == "TestRecord.RecordTime":
                 aux_date = aux_line[2].replace("/", "-").replace(":", ".").replace(" ", "_").removesuffix("\n")
 
@@ -110,13 +113,48 @@ def setup(fpath):
 
 
 def extractor(fpath, filter):
+    def file_extraction(fpath, item):
 
-    for item in os.listdir(os.path.join(fpath, "pruned")):
+        aux_labels = None
+        aux_dir = {}
+        aux_values, aux_series = [], []
         with open(os.path.join(fpath, "pruned", item), "r") as f:
             lines = f.readlines()
         for line in lines:
-            pass
-            # aux_line = line.split(r", ")
+            aux_line = line.split(r", ")
+            # Extraction of header information
+            if aux_line[0] in filter.keys() and len(aux_line) > 2:
+                if aux_line[1] in filter[aux_line[0]].keys():
+                    aux_list = []
+                    for element in aux_line[2:]:
+                        aux_list.append(element.removesuffix("\n"))
+                    if len(aux_list) != 1:
+                        aux_dir[filter[aux_line[0]][aux_line[1]]] = aux_list
+                    else:
+                        aux_dir[filter[aux_line[0]][aux_line[1]]] = aux_list[0]
+            elif aux_line[0] == "DataName":
+                aux_labels = aux_line[1:]
+            elif aux_line[0] == "DataValue":
+                aux_line[-1] = aux_line[-1].removesuffix("\n")
+                aux_values.append(aux_line[1:])
+            else:
+                aux_dir[filter[aux_line[0]]] = aux_line[1].removeprefix("Canet_").removesuffix("\n")
+        # Reconstruction into something usable
+        try:
+            aux_values = np.array(aux_values, dtype=np.float64)
+            for i in range(len(aux_labels)):
+                aux_dir[aux_labels[i].removesuffix("\n")] = aux_values[:, i]
+            return aux_dir
+        except ValueError or IndexError:
+            print("DEBUG: Check " + os.path.join(fpath, "pruned", item))
+            return 0
+
+    db = []
+    for item in os.listdir(os.path.join(fpath, "pruned")):
+        file_values = file_extraction(fpath, item)
+        if file_values != 0:
+            db.append([str(item), file_values])
+    return db
 
 
 if __name__ == "__main__":
@@ -125,4 +163,4 @@ if __name__ == "__main__":
         fpath = (r"C:\Users\canetr1\OneDrive - Aalto University\Research Projects\008 - Spectro-DoS\251117 - SDoS - "
                  r"v2\v2 without wirebond\test")
         filter = setup(fpath)
-        extractor(fpath, filter)
+        db = extractor(fpath, filter)
