@@ -4,6 +4,7 @@
     Purpose: Script list to analyse big amounts of data coming from the Probestation in the 4th floor of Micronova.
 """
 
+import dash_bootstrap_components as dbc
 import pandas as pd
 import numpy as np
 
@@ -13,11 +14,13 @@ import os
 
 from dash import Dash, html, dcc
 
+dbc_css = "https://cdn.jsdelivr.net/gh/AnnMarieW/dash-bootstrap-templates/dbc.min.css"
+
 
 def check_if_sys():
     try:
         if sys.argv[1]:
-            setup(sys.argv[1])
+            return False
     except IndexError:
         return True
 
@@ -113,6 +116,7 @@ def setup(fpath):
 
 
 def extractor(fpath, filter):
+
     def file_extraction(fpath, item):
 
         aux_labels = None
@@ -145,7 +149,8 @@ def extractor(fpath, filter):
             for i in range(len(aux_labels)):
                 aux_dir[aux_labels[i].removesuffix("\n")] = aux_values[:, i]
             return aux_dir
-        except ValueError or IndexError:
+        except (ValueError, IndexError) as e:
+            print("Type of error: " + str(e))
             print("DEBUG: Check " + os.path.join(fpath, "pruned", item))
             return 0
 
@@ -157,10 +162,33 @@ def extractor(fpath, filter):
     return db
 
 
+def dash_setup(app):
+
+    colors = {"background": "#6e8791", "text": "#000000"}
+
+    ch_c1 = html.H1("Test Dash App", style={"textAlign": "center", "color": colors['text']})
+    column1 = html.Div(className="column", children=ch_c1)
+    ch_c2 = html.H1("Test Dash App", style={"textAlign": "center", "color": colors['text']})
+    column2 = html.Div(className="column", children=ch_c2)
+
+    elements = [column1, column2]
+
+    app.layout = html.Div(className="row", style={"backgroundColor": colors["background"]}, children=elements)
+
+    app.run(debug=True)
+
+
 if __name__ == "__main__":
 
+    #app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP, dbc.icons.FONT_AWESOME, dbc_css])
+    #dash_setup(app)
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     if check_if_sys():
-        fpath = (r"C:\Users\canetr1\OneDrive - Aalto University\Research Projects\008 - Spectro-DoS\251117 - SDoS - "
-                 r"v2\v2 without wirebond\test")
-        filter = setup(fpath)
-        db = extractor(fpath, filter)
+        fpath = (r"C:\Users\canetr1\OneDrive - Aalto University\Research Projects\004 - 2D Perovskites\Raw data\251217 "
+                 r"- InSe n2 - 1st full batch\251217 - InSe + n2 - Measurements")
+    else:
+        fpath = sys.argv[1:][0]
+    filter = setup(fpath)
+    db = extractor(fpath, filter)
+
+
